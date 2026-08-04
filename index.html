@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Consultorio · Especialistas Baires</title>
+<meta name="theme-color" content="#0b1220">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Consultorio">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--galo:#0ea5e9;--galo-d:#0b3a5b;--karla:#7a5a9e;--karla-d:#4a3363;--ink:#0f1c2b;--muted:#6b7b8c}
+html,body{height:100%}
+body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--ink);
+ background:linear-gradient(160deg,#0b1220 0%,#122236 45%,#1a2b42 100%);min-height:100dvh;
+ display:flex;flex-direction:column;align-items:center;padding:28px 18px calc(28px + env(safe-area-inset-bottom));}
+.head{text-align:center;color:#fff;margin:14px 0 26px;max-width:720px}
+.head .logo{width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,var(--galo),var(--karla));
+ display:grid;place-items:center;margin:0 auto 14px;font-weight:800;font-size:22px;color:#fff;box-shadow:0 8px 30px rgba(0,0,0,.35)}
+.head h1{font-size:22px;font-weight:700;letter-spacing:.2px}
+.head p{color:#9fb4c9;font-size:13.5px;margin-top:6px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;width:100%;max-width:760px}
+@media(max-width:640px){.grid{grid-template-columns:1fr;gap:16px}}
+.card{background:#fff;border-radius:20px;padding:22px 20px 20px;box-shadow:0 12px 40px rgba(0,0,0,.28);
+ display:flex;flex-direction:column;position:relative;overflow:hidden}
+.card:before{content:"";position:absolute;top:0;left:0;right:0;height:5px}
+.card.galo:before{background:linear-gradient(90deg,var(--galo),#0369a1)}
+.card.karla:before{background:linear-gradient(90deg,var(--karla),#c9a96e)}
+.doc{display:flex;align-items:center;gap:13px;margin-bottom:4px}
+.av{width:48px;height:48px;border-radius:14px;flex:0 0 auto;display:grid;place-items:center;color:#fff;font-weight:800;font-size:17px}
+.galo .av{background:linear-gradient(135deg,var(--galo),var(--galo-d))}
+.karla .av{background:linear-gradient(135deg,var(--karla),var(--karla-d))}
+.doc h2{font-size:17px;font-weight:700;line-height:1.15}
+.doc .spec{font-size:12px;color:var(--muted);margin-top:3px}
+.btns{display:flex;flex-direction:column;gap:11px;margin-top:18px}
+.btn{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--ink);
+ border:1.5px solid #e7edf3;border-radius:14px;padding:14px 16px;font-weight:600;font-size:15px;
+ background:#fbfdfe;transition:transform .06s ease,border-color .15s,background .15s}
+.btn:active{transform:scale(.98)}
+.btn .ic{width:34px;height:34px;border-radius:10px;flex:0 0 auto;display:grid;place-items:center;font-size:17px}
+.galo .btn:hover{border-color:var(--galo);background:#eef8fd}
+.karla .btn:hover{border-color:var(--karla);background:#f4eefb}
+.galo .btn .ic{background:#e3f3fb;color:var(--galo-d)}
+.karla .btn .ic{background:#efe7f7;color:var(--karla-d)}
+.btn .go{margin-left:auto;color:#b9c6d3;font-size:20px}
+.foot{color:#8ea6bd;font-size:12px;text-align:center;margin-top:26px;line-height:1.7}
+.foot a{color:#bcd2e6;text-decoration:none}
+.hint{margin-top:18px;max-width:520px;text-align:center;color:#7e93a8;font-size:11.5px;line-height:1.6}
+</style>
+</head>
+<body>
+  <div class="head">
+    <div class="logo">EB</div>
+    <h1>Consultorio · Especialistas Baires</h1>
+    <p>Herramientas clínicas · Machala – Ecuador</p>
+  </div>
+
+  <div class="grid">
+    <div class="card galo">
+      <div class="doc">
+        <div class="av">GC</div>
+        <div><h2>Dr. Galo Córdova</h2><div class="spec">Neumología · Medicina del Sueño</div></div>
+      </div>
+      <div class="btns">
+        <a class="btn" href="recetario-galo.html"><span class="ic">℞</span> Recetario <span class="go">›</span></a>
+        <a class="btn" href="certificado.html"><span class="ic">📄</span> Certificados médicos <span class="go">›</span></a>
+      </div>
+    </div>
+
+    <div class="card karla">
+      <div class="doc">
+        <div class="av">KA</div>
+        <div><h2>Dra. Karla Andrade</h2><div class="spec">Dermatología · Estética · Capilar</div></div>
+      </div>
+      <div class="btns">
+        <a class="btn" href="recetario-karla.html"><span class="ic">℞</span> Recetario <span class="go">›</span></a>
+        <a class="btn" href="certificado.html"><span class="ic">📄</span> Certificados médicos <span class="go">›</span></a>
+      </div>
+    </div>
+  </div>
+
+  <div class="hint">Los certificados abren la misma app, donde se elige el membrete (Dr. Galo o Dra. Karla).</div>
+
+  <div class="foot">
+    especialistasbaires.com · Machala – Ecuador<br>
+    Instala esta página en tu celular: «Agregar a pantalla de inicio».
+  </div>
+</body>
+</html>
