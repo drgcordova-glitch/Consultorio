@@ -140,6 +140,7 @@ input[type=range]{width:100%;accent-color:var(--ui)}
 .cert .b{font-weight:700}
 .cert .gap{height:12px}
 .cert .cierre{margin-top:16px;text-align:justify;line-height:1.6}
+.cert .doctitle{text-align:center;font-weight:800;font-size:16px;letter-spacing:1.5px;text-transform:uppercase;margin:0 0 16px;padding-bottom:9px;border-bottom:2px solid var(--brand)}
 .cert .firma{margin-top:52px}
 .cert .firma .nm{font-weight:700;font-size:11.5px;margin-bottom:2px}
 .cert .firma .l{margin:0 0 1px}
@@ -200,6 +201,7 @@ input[type=range]{width:100%;accent-color:var(--ui)}
   <button class="tab active" data-doc="reposo">Certificado de reposo</button>
   <button class="tab" data-doc="general">Certificado médico</button>
   <button class="tab" data-doc="aviso">Aviso de enfermedad</button>
+  <button class="tab" data-doc="constancia">Constancia de atención</button>
 </div>
 
 <div class="wrap">
@@ -14981,6 +14983,20 @@ function fechaCab(){
   return `<div class="fecha">${esc(v("e_lugar")||"")} ${p.d} de ${MES[p.m-1]} del ${p.y}</div>`;
 }
 
+function titulo(t){ return `<div class="doctitle">${esc(t)}</div>`; }
+function bloqueConstancia(){
+  let h = L("Paciente", v("p_nom"), true)
+    + L("Edad", v("p_edad"))
+    + L("Cedula De Identidad", v("p_ced"));
+  if(v("f_emision")) h += `<p class="ln"><span class="k">Fecha De Atención: </span><span class="b">${fNum(v("f_emision"))}</span> (${fLetras(v("f_emision"))})</p>`;
+  h += `<div class="gap"></div>` + L("Diagnostico", v("dx_text"));
+  if(cieChips.length) h += L("Cie 10", cieChips.map(c=>c.code).join(", "));
+  return h;
+}
+function cierreConstancia(){
+  const p=pd(v("f_emision")), lug=v("e_lugar")||"";
+  return `<p class="cierre">Es cuanto puedo certificar en honor a la verdad${p?`, dado y firmado a los ${p.d} dias del mes de ${MES[p.m-1]} del ${p.y}`:""}.${lug?" Ciudad de "+esc(lug):""}</p>`;
+}
 function render(){
   const c=$("#cert");
   c.style.setProperty("--brand", v("e_color")||"#a98fc4");
@@ -14993,29 +15009,33 @@ function render(){
     c.classList.remove("mb");
     c.style.backgroundImage="";
   }
-  let mid;
-  if(DOC==="reposo"){
-    mid = bloquePaciente()+`<div class="gap"></div>`+bloqueEnfermedad()+`<div class="gap"></div>`+bloqueDx(true)+cierre();
+  const gap=`<div class="gap"></div>`;
+  let inner;
+  if(DOC==="constancia"){
+    inner = titulo("CONSTANCIA DE ATENCIÓN") + bloqueConstancia() + cierreConstancia();
+  } else if(DOC==="reposo"){
+    inner = fechaCab() + bloquePaciente()+gap+bloqueEnfermedad()+gap+bloqueDx(true)+cierre();
   } else if(DOC==="general"){
-    mid = bloquePaciente()+`<div class="gap"></div>`+bloqueEnfermedad()+`<div class="gap"></div>`+bloqueDx(false)+cierre();
+    inner = fechaCab() + bloquePaciente()+gap+bloqueEnfermedad()+gap+bloqueDx(false)+cierre();
   } else {
-    mid = bloquePaciente()+`<div class="gap"></div>`+bloqueEnfermedad()+`<div class="gap"></div>`+bloqueDx(false)
+    inner = fechaCab() + bloquePaciente()+gap+bloqueEnfermedad()+gap+bloqueDx(false)
       + `<p class="cierre">Se emite el presente aviso de enfermedad para conocimiento del empleador y los trámites que correspondan ante el IESS.</p>`;
   }
-  const cuerpo = `<div class="content">` + fechaCab() + mid + firma() + `</div>`;
+  const cuerpo = `<div class="content">` + inner + firma() + `</div>`;
   c.innerHTML = MEMBRETE ? cuerpo : (head() + cuerpo + pie());
 }
 
 function setDoc(d){
   DOC=d;
   $$(".tab").forEach(t=>t.classList.toggle("active",t.dataset.doc===d));
-  $("#docLabel").textContent={reposo:"Reposo",general:"Certificado médico",aviso:"Aviso de enfermedad"}[d];
+  $("#docLabel").textContent={reposo:"Reposo",general:"Certificado médico",aviso:"Aviso de enfermedad",constancia:"Constancia de atención"}[d];
   $$(".reposo-block").forEach(el=> el.style.display = d==="reposo"?"":"none");
   const n=$("#applicNote");
   n.innerHTML = d==="reposo"
     ? "Formato calcado de tu certificado, con los campos que exige el IESS (contingencia, CIE-10, días en número y letras, firma)."
     : d==="general" ? "Mismo formato, sin las líneas de reposo médico."
-    : "Aviso de enfermedad. Para el subsidio del IESS el documento operativo es el certificado de reposo validado.";
+    : d==="aviso" ? "Aviso de enfermedad. Para el subsidio del IESS el documento operativo es el certificado de reposo validado."
+    : "Constancia de atención: documento simple con título arriba y solo nombre, edad, cédula, fecha de atención y diagnóstico. Llena esos campos y la Fecha de emisión (se usa como fecha de atención).";
   render();
 }
 $("#tabs").onclick=e=>{ const t=e.target.closest(".tab"); if(t) setDoc(t.dataset.doc); };
