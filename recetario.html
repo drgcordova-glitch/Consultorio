@@ -147,7 +147,7 @@ input[type=color]{padding:2px;height:36px;width:56px;cursor:pointer}
     <div class="section" id="sec-med">
       <div class="head" data-toggle><span class="num">2</span><h2>Medicamentos + indicaciones</h2><span class="chev">▾</span></div>
       <div class="body">
-        <div class="hint">Escribe en <b>Medicamento</b> y aparece el banco (marca, genérico y presentación); al elegir se sugiere la dosis, que puedes editar. En <b>Cantidad</b> indica el número de pastillas o productos a entregar. El <b>★</b> guarda un medicamento tuyo. Las dosis son sugerencias: <b>verifícalas siempre</b>.</div>
+        <div class="hint">Escribe en <b>Medicamento</b> y aparece el banco (marca, genérico y presentación); al elegir se sugiere la dosis, que puedes editar. En <b>Cantidad</b> escribe solo el número (ej: 14) y en la receta aparecerá como <b># 14 (CATORCE)</b>; si prefieres, puedes escribir texto libre (ej: 1 frasco). El <b>★</b> guarda un medicamento tuyo. Las dosis son sugerencias: <b>verifícalas siempre</b>.</div>
         <div id="medRows"></div>
         <datalist id="medlist"></datalist>
         <button class="addbtn" id="addMed">＋ Agregar medicamento</button>
@@ -294,7 +294,7 @@ function renderMedRows(){
   const c=$("#medRows");
   c.innerHTML=meds.map((m,i)=>`<div class="drow" data-i="${i}"><div class="dnum">${i+1}</div><div class="dfields">
     <div class="medwrap"><input class="med" data-i="${i}" autocomplete="off" placeholder="Medicamento (marca o genérico)"></div>
-    <input class="cant" data-i="${i}" placeholder="N.º de pastillas o productos a entregar (ej: 30 pastillas, 1 frasco)">
+    <input class="cant" data-i="${i}" placeholder="Cantidad: N.º de pastillas o productos (ej: 14)">
     <input class="ind" data-i="${i}" placeholder="Indicación (cómo tomarlo)">
     <div class="freqchips">${FREQS.map(f=>`<span class="fchip" data-i="${i}" data-t="${esc(f)}">${f}</span>`).join("")}</div>
     <div class="pedcalc" data-i="${i}" style="display:none"><span class="pedlbl">🧮 Peso</span><input class="pedw" data-i="${i}" type="number" min="0" step="0.5" placeholder="kg"><span class="pedout" data-i="${i}"></span></div>
@@ -334,13 +334,34 @@ function firmaBlock(){
   return `<div class="foot"><div class="fch">Fecha: ${v("p_fecha")?esc(fechaTxt(v("p_fecha"))):""}</div>
     <div class="sign"><div class="l"></div><div class="nm">${v("e_firma1")?esc(v("e_firma1")):"Dr. GALO CÓRDOVA"}</div><div class="cg">${v("e_firma2")?esc(v("e_firma2")):"NEUMÓLOGO"}</div></div></div>`;
 }
+function numToWords(n){
+  if(!Number.isFinite(n)||n<0||n>9999)return String(n);
+  if(n===0)return"cero";
+  const U=["","uno","dos","tres","cuatro","cinco","seis","siete","ocho","nueve"];
+  const D10=["diez","once","doce","trece","catorce","quince","dieciséis","diecisiete","dieciocho","diecinueve"];
+  const D=["","","veinte","treinta","cuarenta","cincuenta","sesenta","setenta","ochenta","noventa"];
+  const C=["","ciento","doscientos","trescientos","cuatrocientos","quinientos","seiscientos","setecientos","ochocientos","novecientos"];
+  function two(x){if(x<10)return U[x];if(x<20)return D10[x-10];
+    if(x===20)return"veinte";if(x<30)return"veinti"+U[x-20];
+    const d=Math.floor(x/10),u=x%10;return u?`${D[d]} y ${U[u]}`:D[d];}
+  function three(x){if(x===100)return"cien";const c=Math.floor(x/100),r=x%100;
+    if(!c)return two(r);return r?`${C[c]} ${two(r)}`:C[c];}
+  if(n<1000)return three(n);
+  const mil=Math.floor(n/1000),r=n%1000;
+  const milTxt=mil===1?"mil":`${three(mil)} mil`;
+  return r?`${milTxt} ${three(r)}`:milTxt;
+}
 function medRx(m){
   let body;
   if(m.marca){const showDci=m.dci&&!normz(m.marca).includes(normz(m.dci));
     body=`<b>${esc(m.marca)}</b>${showDci?` (${esc(m.dci)})`:""}${m.pres?` — ${esc(m.pres)}`:""}`;}
   else{const t=(m.med||"").trim();const mt=t.match(/^(.*?)\s*\(([^)]*)\)\s*(.*)$/);
     body=mt?`<b>${esc(mt[1].trim())}</b> (${esc(mt[2].trim())})${mt[3]?" "+esc(mt[3].trim()):""}`:`<b>${esc(t)}</b>`;}
-  const cant=(m.cant||"").trim(); if(cant) body+=` · <b>${esc(cant)}</b>`;
+  const cant=(m.cant||"").trim();
+  if(cant){
+    if(/^\d+$/.test(cant)){const n=parseInt(cant,10);const w=n===1?"un":numToWords(n);body+=` # <b>${n}</b> (${w.toUpperCase()})`;}
+    else body+=` · <b>${esc(cant)}</b>`;
+  }
   return body;
 }
 function preview(){
