@@ -253,7 +253,8 @@ const v=id=>$("#"+id).value.trim();
 const lsGet=k=>{try{return localStorage.getItem(k);}catch(e){return null;}};
 const KEY="recetario_v2";
 const PF=["e_color","e_firma1","e_firma2","e_rxprefix","e_rxnext","e_aikey","e_aimodel"];
-const FREQS=["cada 8 h","cada 12 h","cada 24 h","cada 6 h","por 5 días","por 7 días","por 10 días","antes de comer","después de comer"];
+const FREQS=["cada 8 h","cada 12 h","cada 24 h","cada 6 h","antes de comer","después de comer"];
+const DURAC=["por 1 día","por 5 días","por 7 días","por 10 días","por 15 días","por 1 mes","por 3 meses","por 6 meses"];
 const RECS_SUGE=["Dormir con la cabecera elevada","Lavados nasales con suero fisiológico cada 8 horas","Abundantes líquidos","Reposo relativo","Evitar humo, polvo e irritantes","Control en 7 días","Acudir a emergencia si hay dificultad para respirar"];
 let meds=[{med:"",ind:""}], recs=[""];
 
@@ -296,7 +297,10 @@ function renderMedRows(){
     <div class="medwrap"><input class="med" data-i="${i}" autocomplete="off" placeholder="Medicamento (marca o genérico)"></div>
     <input class="cant" data-i="${i}" placeholder="Cantidad: N.º de pastillas o productos (ej: 14)">
     <input class="ind" data-i="${i}" placeholder="Indicación (cómo tomarlo)">
+    <div class="hint" style="margin:2px 0 0">Frecuencia</div>
     <div class="freqchips">${FREQS.map(f=>`<span class="fchip" data-i="${i}" data-t="${esc(f)}">${f}</span>`).join("")}</div>
+    <div class="hint" style="margin:2px 0 0">Duración del tratamiento</div>
+    <div class="freqchips">${DURAC.map(f=>`<span class="fchip" data-i="${i}" data-t="${esc(f)}">${f}</span>`).join("")}</div>
     <div class="pedcalc" data-i="${i}" style="display:none"><span class="pedlbl">🧮 Peso</span><input class="pedw" data-i="${i}" type="number" min="0" step="0.5" placeholder="kg"><span class="pedout" data-i="${i}"></span></div>
     </div><div class="dtools"><button class="dstar" data-i="${i}" title="Guardar en mi banco">★</button><button class="drem" data-i="${i}" title="Quitar">✕</button></div></div>`).join("");
   meds.forEach((m,i)=>{c.querySelector(`.med[data-i="${i}"]`).value=m.med;c.querySelector(`.ind[data-i="${i}"]`).value=m.ind;c.querySelector(`.cant[data-i="${i}"]`).value=m.cant||"";});
