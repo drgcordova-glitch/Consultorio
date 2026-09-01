@@ -97,7 +97,8 @@ input[type=color]{padding:2px;height:36px;width:56px;cursor:pointer}
 .rx .band{width:100%;display:block}
 .rx .body{flex:1;display:grid;grid-template-columns:1fr 1fr;min-height:0}
 .rx .col{padding:2.2% 3% 1.5%;display:flex;flex-direction:column;min-width:0;font-size:1.05vw}
-.rx .col.left{border-right:1.5px dashed #b7c2ce}
+.rx .col.left{padding-right:6%;border-right:1.5px dashed #b7c2ce}
+.rx .col.right{padding-left:6%}
 @media print{.rx .col{font-size:9.2pt}}
 .rx .kv{display:flex;gap:6px;align-items:baseline;border-bottom:1px solid #cfd6dd;padding:3px 0;margin-bottom:3px}
 .rx .kv .k{font-weight:700;white-space:nowrap}
@@ -355,6 +356,12 @@ function numToWords(n){
   const milTxt=mil===1?"mil":`${three(mil)} mil`;
   return r?`${milTxt} ${three(r)}`:milTxt;
 }
+function medNamePlain(m){
+  if(m.marca){const showDci=m.dci&&!normz(m.marca).includes(normz(m.dci));
+    return `${esc(m.marca)}${showDci?` (${esc(m.dci)})`:""}`;}
+  const t=(m.med||"").trim();const mt=t.match(/^(.*?)\s*\(([^)]*)\)\s*(.*)$/);
+  return mt?`${esc(mt[1].trim())} (${esc(mt[2].trim())})${mt[3]?" "+esc(mt[3].trim()):""}`:esc(t);
+}
 function medRx(m){
   let body;
   if(m.marca){const showDci=m.dci&&!normz(m.marca).includes(normz(m.dci));
@@ -374,7 +381,7 @@ function preview(){
   const left = medsF.length
     ? medsF.map((m,i)=>`<div class="li"><span class="n">${i+1}.</span><span>${m.med.trim()?medRx(m):'<span class="ph">—</span>'}</span></div>`).join("")
     : '<div class="ph">Agrega medicamentos…</div>';
-  let right = medsF.map((m,i)=> m.ind.trim()?`<div class="li"><span class="n">${i+1}.</span><span>${esc(m.ind)}</span></div>`:"").filter(Boolean).join("");
+  let right = medsF.map((m,i)=> m.ind.trim()?`<div class="li"><span class="n">${i+1}.</span><span>${m.med.trim()?`<b>${medNamePlain(m)}:</b> `:""}${esc(m.ind)}</span></div>`:"").filter(Boolean).join("");
   const recsF=recs.filter(r=>r.trim());
   if(recsF.length) right += `<div class="rec-h">Recomendaciones</div>` + recsF.map(r=>`<div class="li"><span class="n">•</span><span>${esc(r)}</span></div>`).join("");
   if(!right) right='<div class="ph">Indicaciones…</div>';
