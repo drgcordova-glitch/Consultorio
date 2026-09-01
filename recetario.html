@@ -200,18 +200,6 @@ input[type=color]{padding:2px;height:36px;width:56px;cursor:pointer}
       </div>
     </div>
 
-    <div class="section collapsed" id="sec-hist">
-      <div class="head" data-toggle><span class="num">5</span><h2>Historial de recetas</h2><span class="req-note" id="histCount">0</span><span class="chev">▾</span></div>
-      <div class="body">
-        <div class="hint">Guarda una copia de cada receta en <b>este navegador</b>. No es un respaldo legal por sí solo: <b>exporta o guarda en PDF</b> periódicamente para conservar tus copias.</div>
-        <div id="histList" class="histlist"></div>
-        <div class="actionbar" style="padding:12px 0 0;border:none">
-          <button class="btn" id="btnHistExport">Exportar historial</button>
-          <button class="btn ghost" id="btnHistClear">Vaciar historial</button>
-        </div>
-      </div>
-    </div>
-
     <div class="actionbar">
       <button class="btn primary" id="btnSave">💾 Guardar en historial</button>
       <button class="btn primary" id="btnPrint">🖨️ Imprimir / Guardar PDF</button>
@@ -415,31 +403,10 @@ function guardarReceta(){
   hist.unshift(snapshot());saveHistStore();
   const digits=parseInt((v("p_num").match(/\d+/)||[String(nextN())])[0],10)||nextN();
   $("#e_rxnext").value=digits+1;try{localStorage.setItem(KEY,JSON.stringify(perfilObj()));}catch(e){}
-  renderHist();$("#sec-hist").classList.remove("collapsed");
   toast("Receta "+v("p_num")+" guardada ✓  ·  la próxima será "+fmtNum(nextN()));
 }
-function renderHist(){
-  $("#histCount").textContent=hist.length;
-  if(!hist.length){$("#histList").innerHTML='<div class="hint">Aún no hay recetas guardadas.</div>';return;}
-  $("#histList").innerHTML=hist.map((h,i)=>`<div class="hrow"><div class="hinfo"><b>${esc(h.num||"—")}</b> · ${esc(h.nom||"(sin nombre)")}<div class="hsub">${esc(fechaTxt(h.fecha)||"")} · ${h.meds.length} medicamento(s)</div></div>
-    <div class="hacts"><button class="btn mini" data-load="${i}">Cargar</button><button class="drem" data-del="${i}" title="Eliminar">✕</button></div></div>`).join("");
-  $$("#histList [data-load]").forEach(b=>b.onclick=()=>cargarReceta(+b.dataset.load));
-  $$("#histList [data-del]").forEach(b=>b.onclick=()=>{if(confirm("¿Eliminar esta receta del historial?")){hist.splice(+b.dataset.del,1);saveHistStore();renderHist();}});
-}
-function cargarReceta(i){const h=hist[i];if(!h)return;
-  $("#p_nom").value=h.nom||"";$("#p_ced").value=h.ced||"";$("#p_edad").value=h.edad||"";$("#p_fecha").value=h.fecha||"";$("#p_num").value=h.num||"";
-  meds=h.meds&&h.meds.length?h.meds.map(m=>({med:m.med,ind:m.ind,marca:m.marca||"",dci:m.dci||"",pres:m.pres||"",cant:m.cant||""})):[{med:"",ind:""}];
-  recs=h.recs&&h.recs.length?h.recs.slice():[""];
-  if(h.color)$("#e_color").value=h.color;
-  renderMedRows();renderRecRows();pintarSwatches();preview();
-  window.scrollTo({top:0,behavior:"smooth"});toast("Receta cargada — puedes reimprimirla.");
-}
-function exportHist(){if(!hist.length){toast("No hay nada que exportar.");return;}
-  const b=new Blob([JSON.stringify(hist,null,2)],{type:"application/json"});const a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="recetas-historial.json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);}
 function toast(msg){let t=$("#toast");if(!t){t=document.createElement("div");t.id="toast";document.body.appendChild(t);}t.textContent=msg;t.classList.add("show");clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove("show"),2400);}
 $("#btnSave").onclick=guardarReceta;
-$("#btnHistExport").onclick=exportHist;
-$("#btnHistClear").onclick=()=>{if(hist.length&&confirm("¿Vaciar TODO el historial? No se puede deshacer.")){hist=[];saveHistStore();renderHist();}};
 
 async function mejorarIA(){
   const key=v("e_aikey"),st=$("#aiRecStatus"),btn=$("#btnAiRec");
@@ -491,7 +458,7 @@ $("#btnDemo").onclick=()=>{
 
 $$('.section .head[data-toggle]').forEach(h=>h.onclick=()=>h.parentElement.classList.toggle("collapsed"));
 (function(){const t=new Date();$("#p_fecha").value=`${t.getFullYear()}-${String(t.getMonth()+1).padStart(2,"0")}-${String(t.getDate()).padStart(2,"0")}`;})();
-loadPerfil();renderRecChips();renderMedRows();renderRecRows();renderHist();preview();
+loadPerfil();renderRecChips();renderMedRows();renderRecRows();preview();
 </script>
 </body>
 </html>
