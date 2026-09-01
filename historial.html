@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Historial de recetas · Especialistas Baires</title>
+<meta name="theme-color" content="#0b1220">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--galo:#0ea5e9;--galo-d:#0b3a5b;--karla:#7a5a9e;--karla-d:#4a3363;--ink:#0f1c2b;--muted:#6b7b8c;--line:#e7edf3;--brand:var(--galo);--brand-d:var(--galo-d)}
+body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--ink);background:#f4f7fa;min-height:100dvh}
+a{color:inherit}
+.topbar{background:#0b1220;color:#fff;padding:14px 20px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.topbar .back{color:#bcd2e6;text-decoration:none;font-size:13px;white-space:nowrap}
+.topbar h1{font-size:16px;font-weight:700}
+.topbar p{font-size:12px;color:#9fb4c9}
+.wrap{max-width:900px;margin:0 auto;padding:18px}
+.tabs{display:flex;gap:8px;margin-bottom:16px}
+.tab{flex:1;text-align:center;padding:10px 12px;border-radius:12px;border:1.5px solid var(--line);background:#fff;font-weight:700;font-size:13.5px;cursor:pointer;color:var(--muted)}
+.tab.active.galo{border-color:var(--galo);color:var(--galo-d);background:#eef8fd}
+.tab.active.karla{border-color:var(--karla);color:var(--karla-d);background:#f4eefb}
+.toolbar{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;align-items:center}
+.toolbar input[type=search]{flex:1;min-width:160px;padding:9px 12px;border:1px solid var(--line);border-radius:10px;font-size:14px}
+.btn{border:1.5px solid var(--line);background:#fff;color:var(--ink);border-radius:10px;padding:8px 13px;font-weight:600;font-size:13px;cursor:pointer}
+.btn:hover{background:#f4f7fa}
+.btn.danger{color:#b3261e;border-color:#f2c6c2}
+.count{font-size:12.5px;color:var(--muted)}
+.empty{background:#fff;border:1px solid var(--line);border-radius:14px;padding:28px;text-align:center;color:var(--muted);font-size:14px}
+.rows{display:flex;flex-direction:column;gap:10px}
+.row{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.row .head{display:flex;align-items:center;gap:12px;padding:13px 14px;cursor:pointer}
+.row .head .num{font-weight:800;color:var(--brand-d);font-size:13px;min-width:64px}
+.row .head .who{flex:1;min-width:0}
+.row .head .who b{font-size:14.5px}
+.row .head .who .sub{font-size:12px;color:var(--muted);margin-top:2px}
+.row .head .chev{color:var(--muted);transition:transform .15s}
+.row.open .chev{transform:rotate(180deg)}
+.row .detail{display:none;border-top:1px solid var(--line);padding:14px;background:#fbfdfe}
+.row.open .detail{display:block}
+.dfield{font-size:13px;margin-bottom:8px}
+.dfield b{color:var(--brand-d)}
+.medli{padding:8px 10px;border:1px solid var(--line);border-radius:10px;margin-bottom:7px;font-size:13.5px}
+.medli .m{font-weight:700}
+.medli .i{color:#333;margin-top:3px;font-size:12.8px}
+.recli{font-size:13px;margin:2px 0 2px 14px}
+.detail-acts{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.hint{font-size:12px;color:var(--muted);margin-top:10px;line-height:1.6}
+@media print{.topbar,.tabs,.toolbar,.detail-acts,.hint{display:none}.row{break-inside:avoid}.row .detail{display:block!important}.row .head .chev{display:none}}
+</style>
+</head>
+<body>
+  <div class="topbar">
+    <a class="back" href="index.html">‹ Inicio</a>
+    <div><h1>Historial de recetas</h1><p>Consulta rápida — no abre el recetario completo</p></div>
+  </div>
+
+  <div class="wrap">
+    <div class="tabs">
+      <div class="tab galo" id="tabGalo" data-doc="galo">Dr. Galo Córdova</div>
+      <div class="tab karla" id="tabKarla" data-doc="karla">Dra. Karla Andrade</div>
+    </div>
+
+    <div class="toolbar">
+      <input type="search" id="q" placeholder="Buscar por nombre de paciente…">
+      <span class="count" id="count"></span>
+      <button class="btn" id="btnExport">Exportar (JSON)</button>
+    </div>
+
+    <div id="list"></div>
+    <div class="hint">Esta página solo <b>muestra</b> lo ya guardado en este navegador (no imprime con membrete). Para reimprimir una receta con el diseño oficial, abre el <b>Recetario</b> del doctor correspondiente y usa "Cargar" con el mismo número o paciente.</div>
+  </div>
+
+<script>
+const KEYS={galo:"recetario_hist_v1",karla:"recetario_ka_hist_v1"};
+const MES=["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
+function fechaTxt(x){if(!x)return"";const p=x.split("-").map(Number);if(p.length<3)return x;const[y,m,d]=p;return `${d} de ${MES[m-1]} de ${y}`;}
+const esc=s=>(s==null?"":String(s)).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+const $=s=>document.querySelector(s),$$=s=>Array.from(document.querySelectorAll(s));
+
+function loadHist(doc){try{return JSON.parse(localStorage.getItem(KEYS[doc])||"[]");}catch(e){return[];}}
+function saveHist(doc,arr){try{localStorage.setItem(KEYS[doc],JSON.stringify(arr));}catch(e){alert("No se pudo guardar el cambio.");}}
+
+let doc=(new URLSearchParams(location.search).get("doc")==="karla")?"karla":"galo";
+let openIdx=null;
+
+function setTab(d){doc=d;openIdx=null;$("#tabGalo").classList.toggle("active",d==="galo");
+  $("#tabKarla").classList.toggle("active",d==="karla");render();}
+$("#tabGalo").onclick=()=>setTab("galo");
+$("#tabKarla").onclick=()=>setTab("karla");
+$("#q").addEventListener("input",render);
+
+function medHtml(m){
+  const cant=(m.cant||"").trim();
+  const nombre=[m.marca||m.med||"",m.pres?`— ${m.pres}`:""].filter(Boolean).join(" ");
+  return `<div class="medli"><div class="m">${esc(nombre)||"(sin nombre)"}${cant?` <span style="color:var(--muted);font-weight:400">· cant: ${esc(cant)}</span>`:""}</div>${m.ind?`<div class="i">${esc(m.ind)}</div>`:""}</div>`;
+}
+
+function render(){
+  const all=loadHist(doc);
+  const q=$("#q").value.trim().toLowerCase();
+  const items=q?all.filter((h,i)=>({h,i})).map((h,i)=>({h,i})).filter(({h})=>(h.nom||"").toLowerCase().includes(q)):all.map((h,i)=>({h,i}));
+  $("#count").textContent=all.length?`${items.length} de ${all.length} receta(s)`:"";
+  const list=$("#list");
+  if(!all.length){list.innerHTML='<div class="empty">Aún no hay recetas guardadas para '+(doc==="galo"?"Dr. Galo":"Dra. Karla")+'.<br>Se guardan desde el botón "Guardar en historial" dentro del Recetario.</div>';return;}
+  if(!items.length){list.innerHTML='<div class="empty">Sin resultados para esa búsqueda.</div>';return;}
+  list.innerHTML='<div class="rows">'+items.map(({h,i})=>`
+    <div class="row${openIdx===i?" open":""}" data-i="${i}">
+      <div class="head" data-toggle="${i}">
+        <div class="num">${esc(h.num||"—")}</div>
+        <div class="who"><b>${esc(h.nom||"(sin nombre)")}</b><div class="sub">${esc(fechaTxt(h.fecha))||"—"} · ${(h.meds||[]).length} medicamento(s)</div></div>
+        <div class="chev">▾</div>
+      </div>
+      <div class="detail">
+        ${h.ced?`<div class="dfield"><b>C.I.:</b> ${esc(h.ced)}</div>`:""}
+        ${h.edad?`<div class="dfield"><b>Edad:</b> ${esc(h.edad)}</div>`:""}
+        <div class="dfield"><b>Medicamentos:</b></div>
+        ${(h.meds||[]).map(medHtml).join("")||'<div class="hint">Sin medicamentos.</div>'}
+        ${(h.recs&&h.recs.filter(r=>r.trim()).length)?`<div class="dfield" style="margin-top:10px"><b>Recomendaciones:</b></div>`+h.recs.filter(r=>r.trim()).map(r=>`<div class="recli">• ${esc(r)}</div>`).join(""):""}
+        <div class="detail-acts">
+          <button class="btn" data-print="${i}">🖨️ Imprimir esta ficha</button>
+          <button class="btn danger" data-del="${i}">✕ Eliminar</button>
+        </div>
+      </div>
+    </div>`).join("")+'</div>';
+  $$("#list [data-toggle]").forEach(el=>el.onclick=()=>{const i=+el.dataset.toggle;openIdx=(openIdx===i)?null:i;render();});
+  $$("#list [data-del]").forEach(b=>b.onclick=(e)=>{e.stopPropagation();const i=+b.dataset.del;if(confirm("¿Eliminar esta receta del historial? No se puede deshacer.")){const arr=loadHist(doc);arr.splice(i,1);saveHist(doc,arr);openIdx=null;render();}});
+  $$("#list [data-print]").forEach(b=>b.onclick=(e)=>{e.stopPropagation();window.print();});
+}
+
+$("#btnExport").onclick=()=>{
+  const all=loadHist(doc);
+  if(!all.length){alert("No hay nada que exportar.");return;}
+  const b=new Blob([JSON.stringify(all,null,2)],{type:"application/json"});
+  const a=document.createElement("a");a.href=URL.createObjectURL(b);a.download=`recetas-historial-${doc}.json`;a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+};
+
+setTab(doc);
+</script>
+</body>
+</html>
