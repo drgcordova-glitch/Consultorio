@@ -66,6 +66,8 @@ a{color:inherit}
   .wrap{max-width:100%;padding:0}
   .sheet{border:none;box-shadow:none;border-radius:0;padding:0}
   .diagram .clearBtn{display:none}
+  .ubic-block{break-before:page;page-break-before:always}
+  .diagram{break-inside:avoid;page-break-inside:avoid}
 }
 </style>
 </head>
@@ -128,8 +130,10 @@ a{color:inherit}
         <div class="field"><label>Toma medicamentos</label><input id="f_meds" placeholder="Ninguno / detalle"></div>
       </div>
 
+      <div class="ubic-block">
       <div class="section-lbl">Ubicación (marcar sitio de la toma)</div>
       <div class="diagrams" id="diagrams"></div>
+      </div>
 
       <div class="signrow">
         <div class="line" id="signDate">Fecha: ______ / ______ / ______</div>
