@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Biopsia de piel · Dra. Karla Andrade</title>
+<meta name="theme-color" content="#0b1220">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--karla:#7a5a9e;--karla-d:#4a3363;--ink:#0f1c2b;--muted:#6b7b8c;--line:#e2dcec}
+body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--ink);background:#f4f2f8}
+a{color:inherit}
+.topbar{background:#0b1220;color:#fff;padding:14px 20px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.topbar .back{color:#d9c9f0;text-decoration:none;font-size:13px;white-space:nowrap}
+.topbar h1{font-size:16px;font-weight:700}
+.topbar p{font-size:12px;color:#b9a8d6}
+.wrap{max-width:820px;margin:0 auto;padding:18px}
+.sheet{background:#fff;border:1px solid var(--line);border-radius:16px;padding:22px 24px;box-shadow:0 4px 18px rgba(60,30,90,.06)}
+.letterhead{border-bottom:2px solid var(--karla);padding-bottom:10px;margin-bottom:16px}
+.letterhead h2{color:var(--karla-d);font-size:20px;font-weight:800}
+.letterhead .sub{color:var(--muted);font-size:12.5px;margin-top:2px}
+.titlebox{margin-top:14px;border:1.5px solid var(--ink);border-radius:8px;padding:9px 12px;text-align:center;font-weight:800;font-size:14px;letter-spacing:.3px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px 16px;margin-top:16px}
+.grid.g3{grid-template-columns:1fr 1fr 1fr}
+.field{display:flex;flex-direction:column;gap:4px}
+.field.full{grid-column:1/-1}
+.field label{font-size:11.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.3px}
+.field input,.field textarea{border:none;border-bottom:1px solid #c9c2d6;padding:6px 2px;font-size:14px;background:transparent;font-family:inherit;color:inherit}
+.field input:focus,.field textarea:focus{outline:none;border-bottom-color:var(--karla)}
+.field textarea{resize:vertical;min-height:44px}
+.section-lbl{margin-top:20px;font-weight:800;font-size:12.5px;color:var(--karla-d);text-transform:uppercase;letter-spacing:.4px;border-bottom:1px solid var(--line);padding-bottom:5px}
+.opts{display:flex;flex-wrap:wrap;gap:14px;margin-top:10px}
+.opt{display:flex;align-items:center;gap:6px;font-size:13.5px;cursor:pointer}
+.opt input{accent-color:var(--karla);width:15px;height:15px}
+.otro-txt{border:none;border-bottom:1px solid #c9c2d6;padding:3px 4px;font-size:13px;min-width:120px;background:transparent;font-family:inherit}
+.diagrams{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}
+.diagram{border:1px solid var(--line);border-radius:10px;padding:8px;text-align:center}
+.diagram .cap{font-size:11px;color:var(--muted);margin-bottom:4px;font-weight:700}
+.diagram svg{width:100%;height:auto;cursor:crosshair;touch-action:none}
+.diagram .clearBtn{margin-top:6px;font-size:10.5px;border:1px solid var(--line);background:#fff;border-radius:8px;padding:3px 8px;cursor:pointer;color:var(--muted)}
+.mark{fill:#c0392b;stroke:#fff;stroke-width:1}
+.signrow{display:flex;justify-content:space-between;align-items:flex-end;margin-top:26px;gap:20px}
+.signrow .line{flex:1;border-top:1px solid #444;text-align:center;font-size:12px;padding-top:4px;color:var(--muted)}
+.hint{font-size:12px;color:var(--muted);margin-top:6px;line-height:1.6}
+.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+.btn{border:1.5px solid var(--line);background:#fff;color:var(--ink);border-radius:10px;padding:9px 14px;font-weight:700;font-size:13px;cursor:pointer}
+.btn.primary{background:var(--karla);border-color:var(--karla);color:#fff}
+.btn:hover{filter:brightness(.97)}
+.btn.danger{color:#b3261e;border-color:#f2c6c2}
+.histbox{margin-top:18px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+.histbox h3{font-size:13px;color:var(--karla-d);cursor:pointer;display:flex;align-items:center;justify-content:space-between}
+.histlist{margin-top:10px;display:flex;flex-direction:column;gap:8px}
+.hrow{display:flex;align-items:center;gap:10px;padding:9px 10px;border:1px solid var(--line);border-radius:9px;font-size:13px}
+.hrow .info{flex:1;min-width:0}
+.hrow .info b{font-size:13.5px}
+.hrow .info .sub{font-size:11.5px;color:var(--muted)}
+.hrow .btn{padding:5px 9px;font-size:12px}
+.empty{color:var(--muted);font-size:13px;padding:6px 2px}
+@media print{
+  body{background:#fff}
+  .topbar,.actions,.histbox,.hint,#toast{display:none}
+  .wrap{max-width:100%;padding:0}
+  .sheet{border:none;box-shadow:none;border-radius:0;padding:0}
+  .diagram .clearBtn{display:none}
+}
+</style>
+</head>
+<body>
+  <div class="topbar">
+    <a class="back" href="index.html">‹ Inicio</a>
+    <div><h1>Biopsia de piel</h1><p>Dra. Karla Andrade · Dermatología</p></div>
+  </div>
+
+  <div class="wrap">
+    <div class="sheet" id="sheet">
+      <div class="letterhead">
+        <h2>Dra. Karla Andrade</h2>
+        <div class="sub">Dermatología · Estética · Medicina Capilar</div>
+        <div class="titlebox">Examen anatomopatológico de biopsia de piel</div>
+      </div>
+
+      <div class="grid">
+        <div class="field full"><label>Apellidos y nombres</label><input id="f_nom" placeholder="Nombre del paciente"></div>
+        <div class="field"><label>C.I.</label><input id="f_ci" placeholder="0700000000"></div>
+        <div class="field"><label>Teléfono</label><input id="f_tel" placeholder="09XXXXXXXX"></div>
+        <div class="field"><label>Fecha de nacimiento</label><input type="date" id="f_fnac"></div>
+        <div class="field"><label>Fecha</label><input type="date" id="f_fecha"></div>
+        <div class="field"><label>N.° de biopsia</label><input id="f_num" placeholder="000001"></div>
+      </div>
+
+      <div class="section-lbl">Método</div>
+      <div class="opts" data-group="metodo">
+        <label class="opt"><input type="radio" name="metodo" value="Sacabocados">Sacabocados</label>
+        <label class="opt"><input type="radio" name="metodo" value="Afeitado">Afeitado</label>
+        <label class="opt"><input type="radio" name="metodo" value="Escisión">Escisión</label>
+        <label class="opt"><input type="radio" name="metodo" value="Incisión">Incisión</label>
+        <label class="opt"><input type="radio" name="metodo" value="Otro">Otro: <input class="otro-txt" id="f_metodoOtro" placeholder="especificar"></label>
+      </div>
+
+      <div class="section-lbl">Material enviado</div>
+      <div class="opts" data-group="material">
+        <label class="opt"><input type="radio" name="material" value="Cuero cabelludo">Cuero cabelludo</label>
+        <label class="opt"><input type="radio" name="material" value="Piel">Piel</label>
+        <label class="opt"><input type="radio" name="material" value="Mucosa">Mucosa</label>
+        <label class="opt"><input type="radio" name="material" value="Semimucosa">Semimucosa</label>
+        <label class="opt"><input type="radio" name="material" value="Uña">Uña</label>
+      </div>
+
+      <div class="grid" style="margin-top:16px">
+        <div class="field full"><label>Sitio de la toma</label><input id="f_sitio" placeholder="Ej: Brazo izquierdo, cara extensora"></div>
+      </div>
+
+      <div class="section-lbl">Evolución</div>
+      <div class="opts" data-group="evolucion">
+        <label class="opt"><input type="radio" name="evolucion" value="Aguda">Aguda</label>
+        <label class="opt"><input type="radio" name="evolucion" value="Subaguda">Subaguda</label>
+        <label class="opt"><input type="radio" name="evolucion" value="Crónica">Crónica</label>
+      </div>
+
+      <div class="grid" style="margin-top:16px">
+        <div class="field full"><label>Descripción clínica</label><textarea id="f_desc" rows="3"></textarea></div>
+        <div class="field full"><label>Diagnóstico presuntivo</label><textarea id="f_diag" rows="2"></textarea></div>
+        <div class="field"><label>Biopsias previas</label><input id="f_previas" placeholder="Ninguna / detalle"></div>
+        <div class="field"><label>Toma medicamentos</label><input id="f_meds" placeholder="Ninguno / detalle"></div>
+      </div>
+
+      <div class="section-lbl">Ubicación (marcar sitio de la toma)</div>
+      <div class="diagrams" id="diagrams"></div>
+
+      <div class="signrow">
+        <div class="line" id="signDate">Fecha: ______ / ______ / ______</div>
+        <div class="line">Firma y sello</div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="btn primary" id="btnSave">💾 Guardar en historial</button>
+      <button class="btn primary" id="btnPrint">🖨️ Imprimir / Guardar PDF</button>
+      <button class="btn" id="btnNew">Nueva ficha</button>
+    </div>
+
+    <div class="histbox">
+      <h3 id="histToggle"><span id="histTitle">Historial de biopsias (0)</span><span id="histChev">▾</span></h3>
+      <div id="histList" class="histlist" style="display:none"></div>
+    </div>
+  </div>
+
+<script>
+const $=s=>document.querySelector(s),$$=s=>Array.from(document.querySelectorAll(s));
+const esc=s=>(s==null?"":String(s)).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+const HKEY="biopsia_karla_hist_v1", NKEY="biopsia_karla_next_v1";
+
+// ---- diagramas: cuerpo/cabeza con marcado por clic ----
+const DIAGRAMS=[
+  {key:"cabeza_frontal",cap:"Cabeza (frontal)",vb:"0 0 100 130",
+   svg:`<ellipse cx="50" cy="45" rx="30" ry="36" fill="none" stroke="#333" stroke-width="1.4"/>
+     <path d="M22 60 Q20 90 26 118 Q50 128 74 118 Q80 90 78 60" fill="none" stroke="#333" stroke-width="1.4"/>
+     <circle cx="38" cy="42" r="2" fill="#333"/><circle cx="62" cy="42" r="2" fill="#333"/>
+     <path d="M46 52 Q50 56 54 52" fill="none" stroke="#333" stroke-width="1.2"/>
+     <path d="M40 66 Q50 70 60 66" fill="none" stroke="#333" stroke-width="1.2"/>`},
+  {key:"cabeza_perfil",cap:"Cabeza (perfil)",vb:"0 0 100 130",
+   svg:`<path d="M35 15 Q65 15 68 45 Q70 55 78 58 Q70 62 68 68 Q66 80 58 84 Q56 90 60 96 Q48 100 40 96 L40 82 Q25 78 22 55 Q20 30 35 15 Z" fill="none" stroke="#333" stroke-width="1.4"/>
+     <circle cx="46" cy="40" r="1.8" fill="#333"/>
+     <path d="M30 46 Q26 50 30 54" fill="none" stroke="#333" stroke-width="1.1"/>`},
+  {key:"cuerpo_frontal",cap:"Cuerpo (frontal)",vb:"0 0 100 220",
+   svg:`<circle cx="50" cy="22" r="16" fill="none" stroke="#333" stroke-width="1.4"/>
+     <path d="M34 40 Q50 34 66 40 L74 90 Q76 120 70 150 L64 210 M36 210 L30 150 Q24 120 26 90 Z" fill="none" stroke="#333" stroke-width="1.4"/>
+     <path d="M34 42 L14 95 M66 42 L86 95" fill="none" stroke="#333" stroke-width="1.4"/>
+     <path d="M50 90 L50 130" fill="none" stroke="#333" stroke-width="1"/>`},
+  {key:"cuerpo_posterior",cap:"Cuerpo (posterior)",vb:"0 0 100 220",
+   svg:`<circle cx="50" cy="22" r="16" fill="none" stroke="#333" stroke-width="1.4"/>
+     <path d="M34 40 Q50 34 66 40 L74 90 Q76 120 70 150 L64 210 M36 210 L30 150 Q24 120 26 90 Z" fill="none" stroke="#333" stroke-width="1.4"/>
+     <path d="M34 42 L14 95 M66 42 L86 95" fill="none" stroke="#333" stroke-width="1.4"/>
+     <path d="M50 90 L50 200" fill="none" stroke="#333" stroke-width="1"/>`}
+];
+let marks={};DIAGRAMS.forEach(d=>marks[d.key]=[]);
+
+function renderDiagrams(){
+  $("#diagrams").innerHTML=DIAGRAMS.map(d=>`
+    <div class="diagram" data-key="${d.key}">
+      <div class="cap">${d.cap}</div>
+      <svg viewBox="${d.vb}" data-key="${d.key}">${d.svg}<g class="marks"></g></svg>
+      <button type="button" class="clearBtn" data-clear="${d.key}">Borrar marcas</button>
+    </div>`).join("");
+  $$("#diagrams svg").forEach(svg=>{
+    svg.addEventListener("click",e=>{
+      const rect=svg.getBoundingClientRect();
+      const vb=svg.viewBox.baseVal;
+      const x=vb.x+((e.clientX-rect.left)/rect.width)*vb.width;
+      const y=vb.y+((e.clientY-rect.top)/rect.height)*vb.height;
+      const key=svg.dataset.key;
+      marks[key].push({x,y});
+      drawMarks(key);
+    });
+  });
+  $$("#diagrams [data-clear]").forEach(b=>b.onclick=()=>{marks[b.dataset.clear]=[];drawMarks(b.dataset.clear);});
+}
+function drawMarks(key){
+  const g=$(`#diagrams svg[data-key="${key}"] .marks`);
+  g.innerHTML=(marks[key]||[]).map(p=>`<circle class="mark" cx="${p.x}" cy="${p.y}" r="2.6"></circle>`).join("");
+}
+
+// ---- historial ----
+function loadHist(){try{return JSON.parse(localStorage.getItem(HKEY)||"[]");}catch(e){return[];}}
+function saveHistStore(arr){try{localStorage.setItem(HKEY,JSON.stringify(arr));}catch(e){alert("No se pudo guardar (almacenamiento lleno).");}}
+function nextNum(){const n=parseInt(localStorage.getItem(NKEY)||"1",10)||1;return n;}
+function fmtNum(n){return String(n).padStart(6,"0");}
+
+function radioVal(name){const el=document.querySelector(`input[name="${name}"]:checked`);return el?el.value:"";}
+function setRadio(name,val){$$(`input[name="${name}"]`).forEach(r=>r.checked=(r.value===val));}
+
+function snapshot(){
+  return {
+    num:$("#f_num").value.trim(),nom:$("#f_nom").value.trim(),ci:$("#f_ci").value.trim(),tel:$("#f_tel").value.trim(),
+    fnac:$("#f_fnac").value,fecha:$("#f_fecha").value,
+    metodo:radioVal("metodo"),metodoOtro:$("#f_metodoOtro").value.trim(),material:radioVal("material"),
+    sitio:$("#f_sitio").value.trim(),evolucion:radioVal("evolucion"),
+    desc:$("#f_desc").value.trim(),diag:$("#f_diag").value.trim(),previas:$("#f_previas").value.trim(),meds:$("#f_meds").value.trim(),
+    marks:JSON.parse(JSON.stringify(marks)),ts:Date.now()
+  };
+}
+function guardar(){
+  if(!$("#f_nom").value.trim()){alert("Escribe el nombre del paciente antes de guardar.");return;}
+  const arr=loadHist();arr.unshift(snapshot());saveHistStore(arr);
+  const n=nextNum();localStorage.setItem(NKEY,String(n+1));
+  renderHist();
+  toast("Biopsia "+($("#f_num").value||fmtNum(n))+" guardada ✓");
+}
+function toast(msg){let t=$("#toast");if(!t){t=document.createElement("div");t.id="toast";t.style.cssText="position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);background:#1c1030;color:#fff;padding:10px 18px;border-radius:10px;font-size:13px;opacity:0;transition:.25s;z-index:99";document.body.appendChild(t);}
+  t.textContent=msg;t.style.opacity=1;t.style.transform="translateX(-50%) translateY(0)";clearTimeout(t._t);t._t=setTimeout(()=>{t.style.opacity=0;t.style.transform="translateX(-50%) translateY(20px)";},2400);}
+
+function renderHist(){
+  const arr=loadHist();
+  $("#histTitle").textContent=`Historial de biopsias (${arr.length})`;
+  const list=$("#histList");
+  if(!arr.length){list.innerHTML='<div class="empty">Aún no hay biopsias guardadas.</div>';return;}
+  list.innerHTML=arr.map((h,i)=>`<div class="hrow"><div class="info"><b>${esc(h.num||"—")}</b> · ${esc(h.nom||"(sin nombre)")}<div class="sub">${esc(h.fecha||"")} · ${esc(h.sitio||"sin sitio")}</div></div>
+    <button class="btn" data-load="${i}">Cargar</button><button class="btn danger" data-del="${i}">✕</button></div>`).join("");
+  $$("#histList [data-load]").forEach(b=>b.onclick=()=>cargar(+b.dataset.load));
+  $$("#histList [data-del]").forEach(b=>b.onclick=()=>{if(confirm("¿Eliminar esta biopsia del historial?")){const a=loadHist();a.splice(+b.dataset.del,1);saveHistStore(a);renderHist();}});
+}
+function cargar(i){
+  const h=loadHist()[i];if(!h)return;
+  $("#f_num").value=h.num||"";$("#f_nom").value=h.nom||"";$("#f_ci").value=h.ci||"";$("#f_tel").value=h.tel||"";
+  $("#f_fnac").value=h.fnac||"";$("#f_fecha").value=h.fecha||"";
+  setRadio("metodo",h.metodo||"");$("#f_metodoOtro").value=h.metodoOtro||"";setRadio("material",h.material||"");
+  $("#f_sitio").value=h.sitio||"";setRadio("evolucion",h.evolucion||"");
+  $("#f_desc").value=h.desc||"";$("#f_diag").value=h.diag||"";$("#f_previas").value=h.previas||"";$("#f_meds").value=h.meds||"";
+  marks=JSON.parse(JSON.stringify(h.marks||{}));DIAGRAMS.forEach(d=>{if(!marks[d.key])marks[d.key]=[];drawMarks(d.key);});
+  window.scrollTo({top:0,behavior:"smooth"});toast("Ficha cargada.");
+}
+function nueva(){
+  if(!confirm("¿Vaciar el formulario para una nueva ficha?"))return;
+  $$(".sheet input[type=text], .sheet input:not([type=radio]), .sheet textarea").forEach(el=>{if(el.type!=="date")el.value="";});
+  $("#f_ci").value="";$("#f_tel").value="";$("#f_fnac").value="";$("#f_sitio").value="";$("#f_previas").value="";$("#f_meds").value="";
+  $("#f_desc").value="";$("#f_diag").value="";$("#f_metodoOtro").value="";$("#f_nom").value="";
+  $$('input[type=radio]').forEach(r=>r.checked=false);
+  marks={};DIAGRAMS.forEach(d=>{marks[d.key]=[];drawMarks(d.key);});
+  $("#f_num").value=fmtNum(nextNum());
+  $("#f_fecha").valueAsDate=new Date();
+  toast("Formulario listo para una nueva ficha.");
+}
+
+$("#btnSave").onclick=guardar;
+$("#btnPrint").onclick=()=>window.print();
+$("#btnNew").onclick=nueva;
+$("#histToggle").onclick=()=>{const l=$("#histList");const open=l.style.display!=="none";l.style.display=open?"none":"flex";$("#histChev").textContent=open?"▾":"▴";};
+
+renderDiagrams();
+$("#f_fecha").valueAsDate=new Date();
+$("#f_num").value=fmtNum(nextNum());
+renderHist();
+</script>
+</body>
+</html>
