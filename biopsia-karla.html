@@ -35,8 +35,10 @@ a{color:inherit}
 .otro-txt{border:none;border-bottom:1px solid #c9c2d6;padding:3px 4px;font-size:13px;min-width:120px;background:transparent;font-family:inherit}
 .diagrams{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}
 .diagram{border:1px solid var(--line);border-radius:10px;padding:8px;text-align:center}
+.diagram.wide{grid-column:span 2}
 .diagram .cap{font-size:11px;color:var(--muted);margin-bottom:4px;font-weight:700}
 .diagram svg{width:100%;height:auto;cursor:crosshair;touch-action:none}
+.diagram.wide svg{max-width:170px;margin:0 auto;display:block}
 .diagram .clearBtn{margin-top:6px;font-size:10.5px;border:1px solid var(--line);background:#fff;border-radius:8px;padding:3px 8px;cursor:pointer;color:var(--muted)}
 .mark{fill:#c0392b;stroke:#fff;stroke-width:1}
 .signrow{display:flex;justify-content:space-between;align-items:flex-end;margin-top:26px;gap:20px}
@@ -151,33 +153,52 @@ const esc=s=>(s==null?"":String(s)).replace(/&/g,"&amp;").replace(/</g,"&lt;").r
 const HKEY="biopsia_karla_hist_v1", NKEY="biopsia_karla_next_v1";
 
 // ---- diagramas: cuerpo/cabeza con marcado por clic ----
+const HEAD_SKULL=`<path d="M32 18 C32 4 68 4 68 18 C74 30 74 55 68 68 C66 80 60 92 56 100 C55 105 51 107 50 107 C49 107 45 105 44 100 C40 92 34 80 32 68 C26 55 26 30 32 18 Z" fill="none" stroke="#333" stroke-width="1.4"/>
+     <path d="M30 45 C22 42 22 56 30 54" fill="none" stroke="#333" stroke-width="1.2"/>
+     <path d="M70 45 C78 42 78 56 70 54" fill="none" stroke="#333" stroke-width="1.2"/>`;
 const DIAGRAMS=[
-  {key:"cabeza_frontal",cap:"Cabeza (frontal)",vb:"0 0 100 130",
-   svg:`<ellipse cx="50" cy="45" rx="30" ry="36" fill="none" stroke="#333" stroke-width="1.4"/>
-     <path d="M22 60 Q20 90 26 118 Q50 128 74 118 Q80 90 78 60" fill="none" stroke="#333" stroke-width="1.4"/>
-     <circle cx="38" cy="42" r="2" fill="#333"/><circle cx="62" cy="42" r="2" fill="#333"/>
-     <path d="M46 52 Q50 56 54 52" fill="none" stroke="#333" stroke-width="1.2"/>
-     <path d="M40 66 Q50 70 60 66" fill="none" stroke="#333" stroke-width="1.2"/>`},
-  {key:"cabeza_perfil",cap:"Cabeza (perfil)",vb:"0 0 100 130",
-   svg:`<path d="M35 15 Q65 15 68 45 Q70 55 78 58 Q70 62 68 68 Q66 80 58 84 Q56 90 60 96 Q48 100 40 96 L40 82 Q25 78 22 55 Q20 30 35 15 Z" fill="none" stroke="#333" stroke-width="1.4"/>
-     <circle cx="46" cy="40" r="1.8" fill="#333"/>
-     <path d="M30 46 Q26 50 30 54" fill="none" stroke="#333" stroke-width="1.1"/>`},
-  {key:"cuerpo_frontal",cap:"Cuerpo (frontal)",vb:"0 0 100 220",
-   svg:`<circle cx="50" cy="22" r="16" fill="none" stroke="#333" stroke-width="1.4"/>
-     <path d="M34 40 Q50 34 66 40 L74 90 Q76 120 70 150 L64 210 M36 210 L30 150 Q24 120 26 90 Z" fill="none" stroke="#333" stroke-width="1.4"/>
-     <path d="M34 42 L14 95 M66 42 L86 95" fill="none" stroke="#333" stroke-width="1.4"/>
-     <path d="M50 90 L50 130" fill="none" stroke="#333" stroke-width="1"/>`},
-  {key:"cuerpo_posterior",cap:"Cuerpo (posterior)",vb:"0 0 100 220",
-   svg:`<circle cx="50" cy="22" r="16" fill="none" stroke="#333" stroke-width="1.4"/>
-     <path d="M34 40 Q50 34 66 40 L74 90 Q76 120 70 150 L64 210 M36 210 L30 150 Q24 120 26 90 Z" fill="none" stroke="#333" stroke-width="1.4"/>
-     <path d="M34 42 L14 95 M66 42 L86 95" fill="none" stroke="#333" stroke-width="1.4"/>
-     <path d="M50 90 L50 200" fill="none" stroke="#333" stroke-width="1"/>`}
+  {key:"cabeza_calva",cap:"Cabeza (frontal)",vb:"0 0 100 130",wide:false,
+   svg:HEAD_SKULL},
+  {key:"cabeza_rostro",cap:"Cabeza (con rostro)",vb:"0 0 100 130",wide:false,
+   svg:HEAD_SKULL+`
+     <circle cx="42" cy="46" r="2" fill="#333"/><circle cx="58" cy="46" r="2" fill="#333"/>
+     <path d="M36 40 Q42 36 48 40" fill="none" stroke="#333" stroke-width="1.1"/>
+     <path d="M52 40 Q58 36 64 40" fill="none" stroke="#333" stroke-width="1.1"/>
+     <path d="M50 50 L47 62 Q50 65 53 62" fill="none" stroke="#333" stroke-width="1.1"/>
+     <path d="M42 76 Q50 82 58 76" fill="none" stroke="#333" stroke-width="1.2"/>`},
+  {key:"cabeza_perfil_der",cap:"Cabeza (perfil derecho)",vb:"0 0 100 130",wide:false,
+   svg:`<path d="M30 20 Q28 8 42 6 Q62 4 68 20 Q74 26 72 34 Q80 38 84 44 Q78 48 72 50 Q70 60 64 66 Q62 72 66 78 Q60 84 52 82 L50 72 Q34 70 28 54 Q22 40 26 28 Q27 23 30 20 Z" fill="none" stroke="#333" stroke-width="1.4"/>
+     <path d="M30 42 Q24 44 26 52 Q28 56 32 52" fill="none" stroke="#333" stroke-width="1.1"/>
+     <circle cx="46" cy="28" r="1.8" fill="#333"/>`},
+  {key:"cabeza_perfil_izq",cap:"Cabeza (perfil izquierdo)",vb:"0 0 100 130",wide:false,
+   svg:`<g transform="translate(100,0) scale(-1,1)">
+     <path d="M30 20 Q28 8 42 6 Q62 4 68 20 Q74 26 72 34 Q80 38 84 44 Q78 48 72 50 Q70 60 64 66 Q62 72 66 78 Q60 84 52 82 L50 72 Q34 70 28 54 Q22 40 26 28 Q27 23 30 20 Z" fill="none" stroke="#333" stroke-width="1.4"/>
+     <path d="M30 42 Q24 44 26 52 Q28 56 32 52" fill="none" stroke="#333" stroke-width="1.1"/>
+     <circle cx="46" cy="28" r="1.8" fill="#333"/>
+     </g>`},
+  {key:"cuerpo_frontal",cap:"Cuerpo (frontal)",vb:"0 0 110 240",wide:true,
+   svg:`<ellipse cx="55" cy="16" rx="13" ry="15" fill="none" stroke="#333" stroke-width="1.4"/>
+     <path d="M42 32 Q55 26 68 32 L74 48 Q92 56 100 78 Q104 92 98 96 Q92 98 88 90 Q82 74 74 62 L78 100 Q82 130 76 158 L70 224 Q64 228 60 224 L58 160 L52 160 L50 224 Q46 228 40 224 L34 158 Q28 130 32 100 L36 62 Q28 74 22 90 Q18 98 12 96 Q6 92 10 78 Q18 56 36 48 Z" fill="none" stroke="#333" stroke-width="1.4"/>
+     <path d="M98 92 L104 98 M94 96 L98 104 M89 98 L91 106" stroke="#333" stroke-width="1" fill="none"/>
+     <path d="M12 92 L6 98 M16 96 L12 104 M21 98 L19 106" stroke="#333" stroke-width="1" fill="none"/>
+     <path d="M60 226 L64 232 M55 227 L55 234 M50 226 L46 232" stroke="#333" stroke-width="1" fill="none"/>
+     <circle cx="46" cy="58" r="1.5" fill="#333"/><circle cx="64" cy="58" r="1.5" fill="#333"/>
+     <path d="M55 66 L55 140" stroke="#333" stroke-width="0.8" fill="none"/>
+     <circle cx="55" cy="100" r="1.3" fill="none" stroke="#333" stroke-width="0.8"/>`},
+  {key:"cuerpo_posterior",cap:"Cuerpo (posterior)",vb:"0 0 110 240",wide:true,
+   svg:`<ellipse cx="55" cy="16" rx="13" ry="15" fill="none" stroke="#333" stroke-width="1.4"/>
+     <path d="M42 32 Q55 26 68 32 L74 48 Q92 56 100 78 Q104 92 98 96 Q92 98 88 90 Q82 74 74 62 L78 100 Q82 130 76 158 L70 224 Q64 228 60 224 L58 160 L52 160 L50 224 Q46 228 40 224 L34 158 Q28 130 32 100 L36 62 Q28 74 22 90 Q18 98 12 96 Q6 92 10 78 Q18 56 36 48 Z" fill="none" stroke="#333" stroke-width="1.4"/>
+     <path d="M98 92 L104 98 M94 96 L98 104 M89 98 L91 106" stroke="#333" stroke-width="1" fill="none"/>
+     <path d="M12 92 L6 98 M16 96 L12 104 M21 98 L19 106" stroke="#333" stroke-width="1" fill="none"/>
+     <path d="M60 226 L64 232 M55 227 L55 234 M50 226 L46 232" stroke="#333" stroke-width="1" fill="none"/>
+     <path d="M55 40 L55 148" stroke="#333" stroke-width="0.8" fill="none"/>
+     <path d="M55 148 L55 166" stroke="#333" stroke-width="1.3" fill="none"/>`}
 ];
 let marks={};DIAGRAMS.forEach(d=>marks[d.key]=[]);
 
 function renderDiagrams(){
   $("#diagrams").innerHTML=DIAGRAMS.map(d=>`
-    <div class="diagram" data-key="${d.key}">
+    <div class="diagram${d.wide?" wide":""}" data-key="${d.key}">
       <div class="cap">${d.cap}</div>
       <svg viewBox="${d.vb}" data-key="${d.key}">${d.svg}<g class="marks"></g></svg>
       <button type="button" class="clearBtn" data-clear="${d.key}">Borrar marcas</button>
