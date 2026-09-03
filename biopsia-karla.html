@@ -89,7 +89,7 @@ a{color:inherit}
         <div class="field full"><label>Apellidos y nombres</label><input id="f_nom" placeholder="Nombre del paciente"></div>
         <div class="field"><label>C.I.</label><input id="f_ci" placeholder="0700000000"></div>
         <div class="field"><label>Teléfono</label><input id="f_tel" placeholder="09XXXXXXXX"></div>
-        <div class="field"><label>Fecha de nacimiento</label><input type="date" id="f_fnac"></div>
+        <div class="field"><label>Edad</label><input id="f_edad" placeholder="25 años"></div>
         <div class="field"><label>Fecha</label><input type="date" id="f_fecha"></div>
         <div class="field"><label>N.° de biopsia</label><input id="f_num" placeholder="000001"></div>
       </div>
@@ -205,7 +205,7 @@ function setRadio(name,val){$$(`input[name="${name}"]`).forEach(r=>r.checked=(r.
 function snapshot(){
   return {
     num:$("#f_num").value.trim(),nom:$("#f_nom").value.trim(),ci:$("#f_ci").value.trim(),tel:$("#f_tel").value.trim(),
-    fnac:$("#f_fnac").value,fecha:$("#f_fecha").value,
+    edad:$("#f_edad").value.trim(),fecha:$("#f_fecha").value,
     metodo:radioVal("metodo"),metodoOtro:$("#f_metodoOtro").value.trim(),material:radioVal("material"),
     sitio:$("#f_sitio").value.trim(),evolucion:radioVal("evolucion"),
     desc:$("#f_desc").value.trim(),diag:$("#f_diag").value.trim(),previas:$("#f_previas").value.trim(),meds:$("#f_meds").value.trim(),
@@ -235,7 +235,7 @@ function renderHist(){
 function cargar(i){
   const h=loadHist()[i];if(!h)return;
   $("#f_num").value=h.num||"";$("#f_nom").value=h.nom||"";$("#f_ci").value=h.ci||"";$("#f_tel").value=h.tel||"";
-  $("#f_fnac").value=h.fnac||"";$("#f_fecha").value=h.fecha||"";
+  $("#f_edad").value=h.edad||"";$("#f_fecha").value=h.fecha||"";
   setRadio("metodo",h.metodo||"");$("#f_metodoOtro").value=h.metodoOtro||"";setRadio("material",h.material||"");
   $("#f_sitio").value=h.sitio||"";setRadio("evolucion",h.evolucion||"");
   $("#f_desc").value=h.desc||"";$("#f_diag").value=h.diag||"";$("#f_previas").value=h.previas||"";$("#f_meds").value=h.meds||"";
@@ -245,7 +245,7 @@ function cargar(i){
 function nueva(){
   if(!confirm("¿Vaciar el formulario para una nueva ficha?"))return;
   $$(".sheet input[type=text], .sheet input:not([type=radio]), .sheet textarea").forEach(el=>{if(el.type!=="date")el.value="";});
-  $("#f_ci").value="";$("#f_tel").value="";$("#f_fnac").value="";$("#f_sitio").value="";$("#f_previas").value="";$("#f_meds").value="";
+  $("#f_ci").value="";$("#f_tel").value="";$("#f_edad").value="";$("#f_sitio").value="";$("#f_previas").value="";$("#f_meds").value="";
   $("#f_desc").value="";$("#f_diag").value="";$("#f_metodoOtro").value="";$("#f_nom").value="";
   $$('input[type=radio]').forEach(r=>r.checked=false);
   marks={};DIAGRAMS.forEach(d=>{marks[d.key]=[];drawMarks(d.key);});
