@@ -202,6 +202,7 @@ input[type=range]{width:100%;accent-color:var(--ui)}
   <button class="tab" data-doc="general">Certificado médico</button>
   <button class="tab" data-doc="aviso">Aviso de enfermedad</button>
   <button class="tab" data-doc="constancia">Constancia de atención</button>
+  <button class="tab" data-doc="prequir">Certificado prequirúrgico</button>
 </div>
 
 <div class="wrap">
@@ -313,8 +314,27 @@ input[type=range]{width:100%;accent-color:var(--ui)}
       </div>
     </div>
 
+    <!-- 3b. PREQUIRÚRGICO -->
+    <div class="section prequir-block" id="sec-prequir" style="display:none">
+      <div class="head" data-toggle><span class="num">3</span><h2>Evaluación prequirúrgica respiratoria</h2><span class="chev">▾</span></div>
+      <div class="body">
+        <div class="field full"><label>Procedimiento</label><input type="text" id="pq_proc" placeholder="Cirugía tabique nasal"></div>
+        <div class="field full"><label>Antecedentes respiratorios relevantes</label>
+          <textarea id="pq_antec" placeholder="Asma bronquial mal controlada con salbutamol a demanda, ACT 16"></textarea></div>
+        <div class="grid2">
+          <div class="field"><label>Puntaje de Torrington &amp; Henderson</label><input type="number" id="pq_score" min="0" max="10" placeholder="0-10"></div>
+          <div class="field"><label>&nbsp;</label><span class="hint" id="pq_autoInterp" style="margin:0">0-2: bajo · 3-4: moderado · ≥5: alto</span></div>
+        </div>
+        <div class="field full"><label>Interpretación / Observaciones adicionales <span class="opt">· opcional</span></label>
+          <textarea id="pq_obs" placeholder='Ej: No se realizó espirometría; el riesgo real podría ser mayor. Requiere monitoreo de saturación durante el procedimiento.'></textarea>
+          <span class="hint" style="margin-top:4px">Para aclarar algo puntual, decir que el riesgo es más alto de lo que sugiere el score (ej. por no contar con espirometría), o pedir algo especial durante el procedimiento.</span></div>
+        <div class="field full"><label>Conclusión</label>
+          <textarea id="pq_concl" placeholder="Paciente con asma mal controlada con espirometría con obstrucción leve con respuesta a broncodilatador, se indica neumocort plus cada 12 hs. Control en 2 meses."></textarea></div>
+      </div>
+    </div>
+
     <!-- 3. CONTINGENCIA -->
-    <div class="section" id="sec-cont">
+    <div class="section std-block" id="sec-cont">
       <div class="head" data-toggle><span class="num">3</span><h2>Contingencia y enfermedad</h2><span class="chev">▾</span></div>
       <div class="body">
         <div class="field full"><label>Tipo de contingencia</label>
@@ -358,7 +378,7 @@ input[type=range]{width:100%;accent-color:var(--ui)}
     </div>
 
     <!-- 4. DIAGNÓSTICO -->
-    <div class="section" id="sec-dx">
+    <div class="section std-block" id="sec-dx">
       <div class="head" data-toggle><span class="num">4</span><h2>Diagnóstico y CIE-10</h2><span class="chev">▾</span></div>
       <div class="body">
         <div class="field full">
@@ -14997,6 +15017,28 @@ function cierreConstancia(){
   const p=pd(v("f_emision")), lug=v("e_lugar")||"";
   return `<p class="cierre">Es cuanto puedo certificar en honor a la verdad${p?`, dado y firmado a los ${p.d} dias del mes de ${MES[p.m-1]} del ${p.y}`:""}.${lug?" Ciudad de "+esc(lug):""}</p>`;
 }
+function bloquePrequirDetalle(){
+  let h="";
+  if(v("pq_antec")){
+    h += `<p class="ln"><span class="k">Antecedentes respiratorios relevantes:</span></p><p class="ln">${esc(v("pq_antec"))}</p><div class="gap"></div>`;
+  }
+  const scoreRaw=v("pq_score"), score=parseInt(scoreRaw,10), hasScore=scoreRaw!==""&&!isNaN(score);
+  if(hasScore){
+    const nivel=score<=2?"BAJO":score<=4?"MODERADO":"ALTO";
+    h += `<p class="ln"><span class="k">Score de Torrington &amp; Henderson:</span></p>`
+       + `<p class="ln">Puntaje estimado: ${score} puntos</p>`
+       + `<p class="ln" style="font-size:11px;color:#777">(0-2: riesgo bajo; 3-4: moderado; igual o mayor a 5: alto)</p><div class="gap"></div>`
+       + `<p class="ln"><span class="k">Interpretación:</span></p>`
+       + `<p class="ln">Riesgo Prequirúrgico Respiratorio ${nivel}</p>`;
+  }
+  if(v("pq_obs")){
+    h += `<div class="gap"></div><p class="ln">${esc(v("pq_obs"))}</p>`;
+  }
+  if(v("pq_concl")){
+    h += `<div class="gap"></div><p class="ln"><span class="k">Conclusión:</span></p><p class="ln">${esc(v("pq_concl"))}</p>`;
+  }
+  return h;
+}
 function render(){
   const c=$("#cert");
   c.style.setProperty("--brand", v("e_color")||"#a98fc4");
@@ -15017,6 +15059,11 @@ function render(){
     inner = fechaCab() + bloquePaciente()+gap+bloqueEnfermedad()+gap+bloqueDx(true)+cierre();
   } else if(DOC==="general"){
     inner = fechaCab() + bloquePaciente()+gap+bloqueEnfermedad()+gap+bloqueDx(false)+cierre();
+  } else if(DOC==="prequir"){
+    inner = titulo("CERTIFICADO MEDICO") + fechaCab()
+      + `<p style="text-align:center;font-weight:700;margin:-8px 0 16px">Informe de evaluación Prequirúrgica Respiratoria</p>`
+      + L("Método","Score de riesgo Respiratorio de Torrington & Henderson")
+      + bloquePaciente() + L("Procedimiento", v("pq_proc")) + gap + bloquePrequirDetalle();
   } else {
     inner = fechaCab() + bloquePaciente()+gap+bloqueEnfermedad()+gap+bloqueDx(false)
       + `<p class="cierre">Se emite el presente aviso de enfermedad para conocimiento del empleador y los trámites que correspondan ante el IESS.</p>`;
@@ -15028,13 +15075,16 @@ function render(){
 function setDoc(d){
   DOC=d;
   $$(".tab").forEach(t=>t.classList.toggle("active",t.dataset.doc===d));
-  $("#docLabel").textContent={reposo:"Reposo",general:"Certificado médico",aviso:"Aviso de enfermedad",constancia:"Constancia de atención"}[d];
+  $("#docLabel").textContent={reposo:"Reposo",general:"Certificado médico",aviso:"Aviso de enfermedad",constancia:"Constancia de atención",prequir:"Prequirúrgico"}[d];
   $$(".reposo-block").forEach(el=> el.style.display = d==="reposo"?"":"none");
+  $$(".prequir-block").forEach(el=> el.style.display = d==="prequir"?"":"none");
+  $$(".std-block").forEach(el=> el.style.display = d==="prequir"?"none":"");
   const n=$("#applicNote");
   n.innerHTML = d==="reposo"
     ? "Formato calcado de tu certificado, con los campos que exige el IESS (contingencia, CIE-10, días en número y letras, firma)."
     : d==="general" ? "Mismo formato, sin las líneas de reposo médico."
     : d==="aviso" ? "Aviso de enfermedad. Para el subsidio del IESS el documento operativo es el certificado de reposo validado."
+    : d==="prequir" ? "Informe de evaluación prequirúrgica respiratoria con el score de Torrington & Henderson. Usa \"Interpretación / Observaciones\" para aclarar algo puntual (ej. riesgo real mayor por no contar con espirometría) o pedidos especiales durante el procedimiento."
     : "Constancia de atención: documento simple con título arriba y solo nombre, edad, cédula, fecha de atención y diagnóstico. Llena esos campos y la Fecha de emisión (se usa como fecha de atención).";
   render();
 }
@@ -15043,6 +15093,10 @@ $("#tabs").onclick=e=>{ const t=e.target.closest(".tab"); if(t) setDoc(t.dataset
 $$("input, select, textarea").forEach(el=>{
   if(["cieSearch","r_desde","r_hasta","r_dias"].includes(el.id)) return;
   el.addEventListener("input",()=>{ render(); if(PF.includes(el.id)) {} });
+});
+$("#pq_score").addEventListener("input",()=>{
+  const s=parseInt(v("pq_score"),10);
+  $("#pq_autoInterp").textContent = isNaN(s) ? "0-2: bajo · 3-4: moderado · ≥5: alto" : `Interpretación automática: ${s<=2?"BAJO":s<=4?"MODERADO":"ALTO"}`;
 });
 $("#r_desde").onchange=()=>syncDias("date");
 $("#r_hasta").onchange=()=>syncDias("date");
@@ -15082,6 +15136,14 @@ $("#btnDemo").onclick=()=>{
 };
 
 loadPerfil();
+(function(){
+  const forced=new URLSearchParams(location.search).get("doc");
+  if(forced==="galo"||forced==="karla"){
+    MB_ID=forced;
+    MEMBRETE=(membretesDisponibles().find(m=>m.id===MB_ID)||{}).src||"";
+    pintarMembretes();
+  }
+})();
 pintarSwatches();
 (function(){ const t=new Date(); $("#f_emision").value=`${t.getFullYear()}-${dosD(t.getMonth()+1)}-${dosD(t.getDate())}`; })();
 $$('.section .head[data-toggle]').forEach(h=>h.onclick=()=>h.parentElement.classList.toggle("collapsed"));
